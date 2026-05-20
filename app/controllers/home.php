@@ -3,11 +3,10 @@ class home
 {
   public function index()
   {
-    echo "Đây là trang chủ";
+    require_once '../app/view/home/index.php';
   }
-
-  public function about()
+  public function login()
   {
-    echo "Đây là trang giới thiệu";
+    require_once "../app/view/home/login.php";
   }
 }
