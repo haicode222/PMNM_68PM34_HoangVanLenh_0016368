@@ -15,7 +15,7 @@ class auth
 
       if (isset($this->user[$username]) && $this->user[$username] === $password) {
         $_SESSION['username'] = $username;
-        header('Location: /home/index');
+        header('Location: /sinhvien');
         exit();
       } else {
         header('Location: /home/login');
