@@ -53,6 +53,31 @@
     cursor: default;
     transition: background-color 0.2s ease-in-out;
 }
+/* CSS cho thanh phân trang */
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    gap: 8px;
+}
+.pagination a {
+    padding: 8px 16px;
+    text-decoration: none;
+    color: #4a4a4a;
+    background-color: #ffffff;
+    border: 1px solid #ffb6c1;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+.pagination a:hover {
+    background-color: #ffdde1; /* Đổi màu khi lướt chuột */
+}
+.pagination a.active {
+    background-color: #ffb6c1; /* Màu nổi bật cho trang hiện tại */
+    color: #000000;
+    font-weight: bold;
+    pointer-events: none; /* Khóa nút trang hiện tại, không cho click lại */
+}
   </style>
 </head>
 
@@ -74,6 +99,22 @@
       </tr>
       <?php endforeach; ?>
   </table>
+  <div class="pagination">
+    <?php if ($currentPage > 1): ?>
+        <a href="/sinhvien/index/<?php echo $currentPage - 1; ?>">&laquo; Trước</a>
+    <?php endif; ?>
+
+    <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+        <a href="/sinhvien/index/<?php echo $i; ?>" class="<?php echo ($i == $currentPage) ? 'active' : ''; ?>">
+            <?php echo $i; ?>
+        </a>
+    <?php endfor; ?>
+
+    <?php if ($currentPage < $totalPages): ?>
+        <a href="/sinhvien/index/<?php echo $currentPage + 1; ?>">Sau &raquo;</a>
+    <?php endif; ?>
+</div>
+
 </body>
 
 </html>
