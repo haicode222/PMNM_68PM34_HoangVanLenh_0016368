@@ -55,4 +55,68 @@ class sinhvien extends controller
       }
     }
   }
+
+  public function edit($id = null)
+  {
+    if ($id === null) {
+      header("Location: /sinhvien/index");
+      exit();
+    }
+
+    $sinhvienModel = $this->model('sinhvienModel');
+    $sinhvien = $sinhvienModel->getSinhvienById($id);
+
+    if (!$sinhvien) {
+      echo "Sinh viên không tồn tại!";
+      exit();
+    }
+
+    $this->view("layout/masterlayout", [
+        'viewname' => 'sinhvien/edit',
+        'sinhvien' => $sinhvien,
+        'title' => 'Chỉnh sửa sinh viên'
+    ]);
+  }
+
+  public function update($id = null)
+  {
+    if ($id === null || $_SERVER['REQUEST_METHOD'] !== 'POST') {
+      header("Location: /sinhvien/index");
+      exit();
+    }
+
+    $HoTen = $_POST['hoten'];
+    $GioiTinh = $_POST['sex'];
+    $MSSV = $_POST['mssv'];
+
+    $sinhvienModel = $this->model('sinhvienModel');
+    $result = $sinhvienModel->update($id, $HoTen, $GioiTinh, $MSSV);
+
+    if ($result) {
+      header("Location: /sinhvien/index");
+      exit();
+    } else {
+      echo "Cập nhật sinh viên thất bại!";
+      exit();
+    }
+  }
+
+  public function delete($id = null)
+  {
+    if ($id === null) {
+      header("Location: /sinhvien/index");
+      exit();
+    }
+
+    $sinhvienModel = $this->model('sinhvienModel');
+    $result = $sinhvienModel->deleteSinhvien($id);
+
+    if ($result) {
+      header("Location: /sinhvien/index");
+      exit();
+    } else {
+      echo "Xóa sinh viên thất bại!";
+      exit();
+    }
+  }
 }

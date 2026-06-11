@@ -56,5 +56,35 @@ class SinhvienModel {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    // 3. Hàm lấy một sinh viên theo ID
+    public function getSinhvienById($id) {
+        $query = "SELECT * FROM tbl_sinhviens WHERE id = :id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    // 4. Hàm cập nhật thông tin sinh viên
+    public function update($id, $hoten, $sex, $mssv) {
+        $query = "UPDATE tbl_sinhviens SET fullname = :HoTen, sex = :GioiTinh, mssv = :MSSV WHERE id = :id";
+        $stmt = $this->conn->prepare($query);
+        
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->bindParam(':HoTen', $hoten);
+        $stmt->bindParam(':GioiTinh', $sex);
+        $stmt->bindParam(':MSSV', $mssv);
+        
+        return $stmt->execute();
+    }
+
+    // 5. Hàm xóa sinh viên
+    public function deleteSinhvien($id) {
+        $query = "DELETE FROM tbl_sinhviens WHERE id = :id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        return $stmt->execute();
+    }
+
 }
 ?>
