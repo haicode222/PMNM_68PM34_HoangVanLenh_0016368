@@ -78,17 +78,68 @@
     font-weight: bold;
     pointer-events: none; /* Khóa nút trang hiện tại, không cho click lại */
 }
+.btn-create {
+    display: inline-block;
+    margin-bottom: 15px;
+    padding: 10px 20px;
+    background-color: #ff4d94;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    transition: background-color 0.3s ease;
+}
+.btn-create:hover {
+    background-color: #ff1493;
+}
+
+/* Action Buttons Styling */
+.btn-action {
+    padding: 6px 12px;
+    margin: 0 4px;
+    text-decoration: none;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s ease;
+    display: inline-block;
+}
+
+.btn-edit {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.btn-edit:hover {
+    background-color: #45a049;
+}
+
+.btn-delete {
+    background-color: #f44336;
+    color: white;
+}
+
+.btn-delete:hover {
+    background-color: #da190b;
+}
+
+/* Actions column styling */
+.actions-column {
+    text-align: center;
+}
   </style>
 </head>
 
 <body>
   <h1><?php echo $title; ?></h1>
+  
   <table class="table-pink">
     <tr>
       <th>STT</th>
       <th>Ten</th>
       <th>gioi tinh</th>
       <th>msv</th>
+      <th class="actions-column">Hành động</th>
     </tr>
     <?php foreach ($sinhviens as $index => $sinhvien): ?>
       <tr>
@@ -96,6 +147,10 @@
         <th><?php echo $sinhvien['fullname']; ?></th>
         <th><?php echo $sinhvien['sex']; ?></th>
         <th><?php echo $sinhvien['mssv']; ?></th>
+        <th class="actions-column">
+          <a href="/sinhvien/edit/<?php echo $sinhvien['id']; ?>" class="btn-action btn-edit">Sửa</a>
+          <a href="/sinhvien/delete/<?php echo $sinhvien['id']; ?>" class="btn-action btn-delete" onclick="return confirm('Bạn có chắc chắn muốn xóa sinh viên này?');">Xóa</a>
+        </th>
       </tr>
       <?php endforeach; ?>
   </table>
@@ -114,6 +169,7 @@
         <a href="/sinhvien/index/<?php echo $currentPage + 1; ?>">Sau &raquo;</a>
     <?php endif; ?>
 </div>
+<a href="/sinhvien/create" class="btn-create">Thêm Sinh Viên</a>
 
 </body>
 
