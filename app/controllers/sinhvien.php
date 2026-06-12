@@ -7,34 +7,54 @@ class sinhvien extends controller
   public function index($page = 1)
   {
     $sinhvienModel = $this->model('sinhvienModel');
+    $lophocModel = $this->model('lophocModel');
+    
+    // Get filter parameters from GET
+    $mssv = isset($_GET['mssv']) ? trim($_GET['mssv']) : '';
+    $fullname = isset($_GET['fullname']) ? trim($_GET['fullname']) : '';
+    $classid = isset($_GET['classid']) ? trim($_GET['classid']) : '';
+    
+    // Load all lophocs for dropdown
+    $lophocs = $lophocModel->getAllLophoc();
     
     // --- BẮT ĐẦU XỬ LÝ PHÂN TRANG --- //
     $limit = 10; // Giới hạn 10 sinh viên / trang
     $page = max(1, intval($page)); // Ép kiểu số nguyên, đảm bảo số trang luôn lớn hơn hoặc bằng 1
     $offset = ($page - 1) * $limit; // Công thức tính mốc bắt đầu cắt dữ liệu
 
-    // Lấy tổng số lượng để tính xem có tất cả bao nhiêu trang
-    $totalSV = $sinhvienModel->getTotalSinhvien();
+    // Lấy tổng số lượng với filter
+    $totalSV = $sinhvienModel->getTotalSinhvienWithFilter($mssv, $fullname, $classid);
     $totalPages = ceil($totalSV / $limit); // ceil() để làm tròn lên (VD: 15sv / 10 = 1.5 -> 2 trang)
 
-    // Lấy đúng 10 sinh viên của trang hiện tại
-    $sinhviens = $sinhvienModel->getSinhvienByPage($limit, $offset);  
+    // Lấy đúng 10 sinh viên của trang hiện tại (WITH CLASS NAMES via INNER JOIN + FILTER)
+    $sinhviens = $sinhvienModel->getSinhvienWithClassAndFilter($limit, $offset, $mssv, $fullname, $classid);  
     // --- KẾT THÚC XỬ LÝ PHÂN TRANG --- //
   
     // Trả về View và đóng gói thêm 2 biến $currentPage, $totalPages sang mảng $data
     $this->view("layout/masterlayout", [
         'viewname' => 'sinhvien/index',
         'sinhviens' => $sinhviens, 
+        'lophocs' => $lophocs,
         'title' => 'Danh sách sinh viên',
         'currentPage' => $page,
-        'totalPages' => $totalPages
+        'totalPages' => $totalPages,
+        'mssv' => $mssv,
+        'fullname' => $fullname,
+        'classid' => $classid
     ]);
   }
 
   public function create()
   {
-    // Trả về View
-    require_once "../app/view/sinhvien/create.php";
+    // Load danh sách lớp học
+    $lophocModel = $this->model('lophocModel');
+    $lophocs = $lophocModel->getAllLophoc();
+    
+    $this->view("layout/masterlayout", [
+        'viewname' => 'sinhvien/create',
+        'lophocs' => $lophocs,
+        'title' => 'Thêm sinh viên'
+    ]);
   }
   public function store()
   {
@@ -42,10 +62,11 @@ class sinhvien extends controller
      
       $HoTen = $_POST['hoten'];
       $GioiTinh = $_POST['sex'];
-       $MSSV = $_POST['mssv'];
+      $MSSV = $_POST['mssv'];
+      $ClassID = $_POST['classid'];
 
       $sinhvienModel = $this->model('sinhvienModel');
-      $result = $sinhvienModel->create( $HoTen, $GioiTinh, $MSSV);
+      $result = $sinhvienModel->create( $HoTen, $GioiTinh, $MSSV, $ClassID);
       if ($result) {
         header("Location: /sinhvien/index");
         exit();
@@ -71,9 +92,14 @@ class sinhvien extends controller
       exit();
     }
 
+    // Load danh sách lớp học
+    $lophocModel = $this->model('lophocModel');
+    $lophocs = $lophocModel->getAllLophoc();
+
     $this->view("layout/masterlayout", [
         'viewname' => 'sinhvien/edit',
         'sinhvien' => $sinhvien,
+        'lophocs' => $lophocs,
         'title' => 'Chỉnh sửa sinh viên'
     ]);
   }
@@ -88,9 +114,10 @@ class sinhvien extends controller
     $HoTen = $_POST['hoten'];
     $GioiTinh = $_POST['sex'];
     $MSSV = $_POST['mssv'];
+    $ClassID = $_POST['classid'];
 
     $sinhvienModel = $this->model('sinhvienModel');
-    $result = $sinhvienModel->update($id, $HoTen, $GioiTinh, $MSSV);
+    $result = $sinhvienModel->update($id, $HoTen, $GioiTinh, $MSSV, $ClassID);
 
     if ($result) {
       header("Location: /sinhvien/index");

@@ -160,11 +160,127 @@
 .btn-nav:hover {
     background-color: #0b7dda;
 }
+
+/* Filter Form Styling */
+.filter-form {
+    background-color: #fff5f9;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    border: 2px solid #ffb6c1;
+}
+
+.filter-form form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+}
+
+.filter-form .form-group {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 200px;
+}
+
+.filter-form label {
+    margin-bottom: 5px;
+    color: #cc0066;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.filter-form input[type="text"],
+.filter-form select {
+    padding: 8px 10px;
+    border: 1px solid #ffb3d9;
+    border-radius: 5px;
+    font-size: 14px;
+    font-family: Arial, sans-serif;
+}
+
+.filter-form input[type="text"]:focus,
+.filter-form select:focus {
+    outline: none;
+    border-color: #ff4d94;
+    box-shadow: 0 0 5px rgba(255, 77, 148, 0.3);
+}
+
+.filter-form .btn-group {
+    display: flex;
+    gap: 8px;
+    align-self: flex-end;
+}
+
+.filter-form button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 14px;
+    transition: 0.3s;
+}
+
+.filter-form .btn-search {
+    background-color: #ff4d94;
+    color: white;
+}
+
+.filter-form .btn-search:hover {
+    background-color: #ff1493;
+}
+
+.filter-form .btn-clear {
+    background-color: #999;
+    color: white;
+}
+
+.filter-form .btn-clear:hover {
+    background-color: #666;
+}
   </style>
 </head>
 
 <body>
   <h1><?php echo $title; ?></h1>
+  
+  <!-- Filter Form -->
+  <div class="filter-form">
+    <form method="GET" action="/sinhvien/index/1">
+      <div class="form-group">
+        <label for="mssv">Tìm kiếm MSSV:</label>
+        <input type="text" id="mssv" name="mssv" value="<?php echo htmlspecialchars($mssv); ?>" placeholder="Nhập MSSV...">
+      </div>
+      
+      <div class="form-group">
+        <label for="fullname">Tìm kiếm Tên:</label>
+        <input type="text" id="fullname" name="fullname" value="<?php echo htmlspecialchars($fullname); ?>" placeholder="Nhập tên sinh viên...">
+      </div>
+      
+      <div class="form-group">
+        <label for="classid">Lọc theo lớp:</label>
+        <select id="classid" name="classid">
+          <option value="">-- Tất cả lớp --</option>
+          <?php if (!empty($lophocs)): ?>
+            <?php foreach ($lophocs as $lophoc): ?>
+              <option value="<?php echo htmlspecialchars($lophoc['classid']); ?>" <?php echo ($classid === $lophoc['classid']) ? 'selected' : ''; ?>>
+                <?php echo htmlspecialchars($lophoc['classname']); ?>
+              </option>
+            <?php endforeach; ?>
+          <?php else: ?>
+            <option value="">Không có lớp học</option>
+          <?php endif; ?>
+        </select>
+      </div>
+      
+      <div class="btn-group">
+        <button type="submit" class="btn-search">🔍 Tìm kiếm</button>
+        <a href="/sinhvien/index/1" class="btn-clear" style="padding: 8px 16px; border-radius: 5px; text-decoration: none; text-align: center;">✕ Xóa bộ lọc</a>
+      </div>
+    </form>
+  </div>
   
   <table class="table-pink">
     <tr>
@@ -190,18 +306,26 @@
       <?php endforeach; ?>
   </table>
   <div class="pagination">
+    <?php 
+      // Build query string to preserve filters during pagination
+      $queryParams = [];
+      if (!empty($mssv)) $queryParams[] = 'mssv=' . urlencode($mssv);
+      if (!empty($fullname)) $queryParams[] = 'fullname=' . urlencode($fullname);
+      if (!empty($classid)) $queryParams[] = 'classid=' . urlencode($classid);
+      $queryString = !empty($queryParams) ? '?' . implode('&', $queryParams) : '';
+    ?>
     <?php if ($currentPage > 1): ?>
-        <a href="/sinhvien/index/<?php echo $currentPage - 1; ?>">&laquo; Trước</a>
+        <a href="/sinhvien/index/<?php echo $currentPage - 1; ?><?php echo $queryString; ?>">&laquo; Trước</a>
     <?php endif; ?>
 
     <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-        <a href="/sinhvien/index/<?php echo $i; ?>" class="<?php echo ($i == $currentPage) ? 'active' : ''; ?>">
+        <a href="/sinhvien/index/<?php echo $i; ?><?php echo $queryString; ?>" class="<?php echo ($i == $currentPage) ? 'active' : ''; ?>">
             <?php echo $i; ?>
         </a>
     <?php endfor; ?>
 
     <?php if ($currentPage < $totalPages): ?>
-        <a href="/sinhvien/index/<?php echo $currentPage + 1; ?>">Sau &raquo;</a>
+        <a href="/sinhvien/index/<?php echo $currentPage + 1; ?><?php echo $queryString; ?>">Sau &raquo;</a>
     <?php endif; ?>
 </div>
 <a href="/sinhvien/create" class="btn-create">Thêm Sinh Viên</a>
