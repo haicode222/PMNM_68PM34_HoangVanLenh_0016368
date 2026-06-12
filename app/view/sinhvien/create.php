@@ -46,16 +46,19 @@
       font-weight: bold;
     }
 
-    input[type="text"] {
+    input[type="text"],
+    select {
       padding: 10px;
       margin-bottom: 15px;
       border: 2px solid #ffb3d9;
       border-radius: 8px;
       outline: none;
       transition: 0.3s;
+      font-family: Arial, sans-serif;
     }
 
-    input[type="text"]:focus {
+    input[type="text"]:focus,
+    select:focus {
       border-color: #ff4d94;
       box-shadow: 0 0 8px rgba(255, 77, 148, 0.3);
     }
@@ -75,6 +78,21 @@
     input[type="submit"]:hover {
       background: #e60073;
     }
+
+    .back-link {
+      text-align: center;
+      margin-top: 15px;
+    }
+
+    .back-link a {
+      color: #ff4d94;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .back-link a:hover {
+      text-decoration: underline;
+    }
   </style>
 </head>
 
@@ -82,16 +100,32 @@
   <div class="container">
       <h1>Tạo sinh viên</h1>
       <form action="/sinhvien/store" method="post">
-        <label for="hoten">Ho ten</label>
-        <input type="text" name="hoten" id="hoten">
-        <label for="sex">Gioi tinh</label>
-        <input type="text" name="sex" id="sex">
+        <label for="hoten">Họ tên</label>
+        <input type="text" name="hoten" id="hoten" required>
+        
+        <label for="sex">Giới tính</label>
+        <input type="text" name="sex" id="sex" required>
+        
         <label for="mssv">MSSV</label>
-        <input type="text" name="mssv" id="mssv">
+        <input type="text" name="mssv" id="mssv" required>
+
+        <label for="classid">Lớp học</label>
+        <select name="classid" id="classid" required>
+          <option value="">-- Chọn lớp học --</option>
+          <?php foreach ($lophocs as $lophoc): ?>
+            <option value="<?php echo htmlspecialchars($lophoc['classid']); ?>">
+              <?php echo htmlspecialchars($lophoc['classname']); ?>
+            </option>
+          <?php endforeach; ?>
+        </select>
     
         <input type="submit" value="Tạo">
+
+        <div class="back-link">
+          <a href="/sinhvien/index">Quay lại danh sách</a>
+        </div>
+      </form>
   </div>
-  </form>
 </body>
 
 </html>

@@ -6,6 +6,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title><?php echo $title; ?></title>
   <style>
+    /* Body and page layout */
+    body {
+      margin: 0;
+      padding: 20px;
+      padding-bottom: 150px;
+      min-height: 100vh;
+    }
+
+    h1 {
+      color: #ff4d94;
+      margin-bottom: 20px;
+    }
+
     /* Tổng thể bảng */
 .table-pink {
     width: 100%;
@@ -53,11 +66,12 @@
     cursor: default;
     transition: background-color 0.2s ease-in-out;
 }
-/* CSS cho thanh phân trang */
+/* Pagination CSS */
 .pagination {
     display: flex;
     justify-content: center;
     margin-top: 20px;
+    margin-bottom: 30px;
     gap: 8px;
 }
 .pagination a {
@@ -81,6 +95,7 @@
 .btn-create {
     display: inline-block;
     margin-bottom: 15px;
+    margin-right: 10px;
     padding: 10px 20px;
     background-color: #ff4d94;
     color: white;
@@ -127,6 +142,24 @@
 .actions-column {
     text-align: center;
 }
+
+/* Navigation buttons */
+.btn-nav {
+    display: inline-block;
+    padding: 10px 20px;
+    margin-top: 15px;
+    margin-right: 10px;
+    background-color: #2196F3;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.btn-nav:hover {
+    background-color: #0b7dda;
+}
   </style>
 </head>
 
@@ -136,17 +169,19 @@
   <table class="table-pink">
     <tr>
       <th>STT</th>
-      <th>Ten</th>
-      <th>gioi tinh</th>
-      <th>msv</th>
+      <th>Tên</th>
+      <th>Giới tính</th>
+      <th>MSSV</th>
+      <th>Tên lớp</th>
       <th class="actions-column">Hành động</th>
     </tr>
     <?php foreach ($sinhviens as $index => $sinhvien): ?>
       <tr>
         <th><?php echo $index +1; ?></th>
-        <th><?php echo $sinhvien['fullname']; ?></th>
-        <th><?php echo $sinhvien['sex']; ?></th>
-        <th><?php echo $sinhvien['mssv']; ?></th>
+        <th><?php echo htmlspecialchars($sinhvien['fullname']); ?></th>
+        <th><?php echo htmlspecialchars($sinhvien['sex']); ?></th>
+        <th><?php echo htmlspecialchars($sinhvien['mssv']); ?></th>
+        <th><?php echo htmlspecialchars($sinhvien['classname']); ?></th>
         <th class="actions-column">
           <a href="/sinhvien/edit/<?php echo $sinhvien['id']; ?>" class="btn-action btn-edit">Sửa</a>
           <a href="/sinhvien/delete/<?php echo $sinhvien['id']; ?>" class="btn-action btn-delete" onclick="return confirm('Bạn có chắc chắn muốn xóa sinh viên này?');">Xóa</a>
@@ -170,6 +205,7 @@
     <?php endif; ?>
 </div>
 <a href="/sinhvien/create" class="btn-create">Thêm Sinh Viên</a>
+<a href="/lophoc/index" class="btn-nav">📚 Danh sách lớp học</a>
 
 </body>
 

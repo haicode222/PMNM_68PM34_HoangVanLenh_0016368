@@ -60,6 +60,21 @@
       box-shadow: 0 0 8px rgba(255, 77, 148, 0.3);
     }
 
+    select {
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 2px solid #ffb3d9;
+      border-radius: 8px;
+      outline: none;
+      transition: 0.3s;
+      font-family: Arial, sans-serif;
+    }
+
+    select:focus {
+      border-color: #ff4d94;
+      box-shadow: 0 0 8px rgba(255, 77, 148, 0.3);
+    }
+
     .button-group {
       display: flex;
       gap: 10px;
@@ -115,6 +130,16 @@
         
         <label for="mssv">MSSV</label>
         <input type="text" name="mssv" id="mssv" value="<?php echo htmlspecialchars($sinhvien['mssv']); ?>" required>
+        
+        <label for="classid">Lớp học</label>
+        <select name="classid" id="classid" required>
+          <option value="">-- Chọn lớp học --</option>
+          <?php foreach ($lophocs as $lophoc): ?>
+            <option value="<?php echo htmlspecialchars($lophoc['classid']); ?>" <?php echo ($sinhvien['classid'] === $lophoc['classid']) ? 'selected' : ''; ?>>
+              <?php echo htmlspecialchars($lophoc['classname']); ?>
+            </option>
+          <?php endforeach; ?>
+        </select>
     
         <div class="button-group">
           <input type="submit" value="Cập nhật">
