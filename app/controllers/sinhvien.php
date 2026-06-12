@@ -20,7 +20,11 @@ class sinhvien extends controller
     $lophocs = $lophocModel->getAllLophoc();
     
     // --- BẮT ĐẦU XỬ LÝ PHÂN TRANG --- //
-    $limit = 10; // Giới hạn 10 sinh viên / trang
+    // `pageSize` từ GET: số bản ghi trên 1 trang, mặc định 10, giới hạn 1..200
+    $pageSize = isset($_GET['pageSize']) ? intval($_GET['pageSize']) : 10;
+    if ($pageSize < 1) $pageSize = 10;
+    if ($pageSize > 200) $pageSize = 200;
+    $limit = $pageSize; // số bản ghi/trang
     $page = max(1, intval($page)); // Ép kiểu số nguyên, đảm bảo số trang luôn lớn hơn hoặc bằng 1
     $offset = ($page - 1) * $limit; // Công thức tính mốc bắt đầu cắt dữ liệu
 
@@ -40,6 +44,7 @@ class sinhvien extends controller
         'title' => 'Danh sách sinh viên',
         'currentPage' => $page,
         'totalPages' => $totalPages,
+      'pageSize' => $pageSize,
         'mssv' => $mssv,
         'fullname' => $fullname,
         'classid' => $classid,

@@ -241,6 +241,7 @@
     background-color: #666;
 }
   </style>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
 <body>
@@ -276,6 +277,11 @@
       </div>
       
       <div class="form-group">
+        <label for="pageSize">Số bản ghi / trang:</label>
+        <input type="number" id="pageSize" name="pageSize" min="1" max="100" value="<?php echo isset($pageSize) ? htmlspecialchars($pageSize) : 10; ?>" />
+      </div>
+      
+      <div class="form-group">
         <label for="sort">Sắp xếp</label>
         <select id="sort" name="sort">
           <option value="">-- Mặc định --</option>
@@ -302,9 +308,14 @@
       <th>Tên lớp</th>
       <th class="actions-column">Hành động</th>
     </tr>
+    <?php 
+      $pageSize = isset($pageSize) ? (int)$pageSize : 10;
+      $currentPage = isset($currentPage) ? (int)$currentPage : 1;
+      $startIndex = ($currentPage - 1) * $pageSize;
+    ?>
     <?php foreach ($sinhviens as $index => $sinhvien): ?>
       <tr>
-        <th><?php echo $index +1; ?></th>
+        <th><?php echo $startIndex + $index + 1; ?></th>
         <th><?php echo htmlspecialchars($sinhvien['fullname']); ?></th>
         <th><?php echo htmlspecialchars($sinhvien['sex']); ?></th>
         <th><?php echo htmlspecialchars($sinhvien['mssv']); ?></th>
@@ -324,6 +335,7 @@
       if (!empty($fullname)) $queryParams[] = 'fullname=' . urlencode($fullname);
       if (!empty($classid)) $queryParams[] = 'classid=' . urlencode($classid);
       if (!empty($sort)) $queryParams[] = 'sort=' . urlencode($sort);
+      if (!empty($pageSize)) $queryParams[] = 'pageSize=' . urlencode($pageSize);
       $queryString = !empty($queryParams) ? '?' . implode('&', $queryParams) : '';
     ?>
     <?php if ($currentPage > 1): ?>
