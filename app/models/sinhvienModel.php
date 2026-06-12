@@ -156,11 +156,11 @@ class SinhvienModel {
     }
 
     // Get filtered students by page
-    public function getSinhvienWithClassAndFilter($limit, $offset, $mssv = '', $fullname = '', $classid = '') {
+    public function getSinhvienWithClassAndFilter($limit, $offset, $mssv = '', $fullname = '', $classid = '', $sort = '') {
         $query = "SELECT sv.id, sv.fullname, sv.sex, sv.mssv, sv.classid, lh.classname 
-              FROM tbl_sinhviens sv 
-              LEFT JOIN tbl_lophoc lh ON sv.classid = lh.classid 
-              WHERE 1=1";
+                  FROM tbl_sinhviens sv 
+                  LEFT JOIN tbl_lophoc lh ON sv.classid = lh.classid 
+                  WHERE 1=1";
         
         if (!empty($mssv)) {
             $query .= " AND sv.mssv LIKE :mssv";
@@ -172,8 +172,29 @@ class SinhvienModel {
             $query .= " AND sv.classid = :classid";
         }
         
-        $query .= " ORDER BY sv.id LIMIT :limit OFFSET :offset";
-        
+        // Determine ORDER BY clause based on $sort (safe mapping)
+        $orderBy = 'ORDER BY sv.id ASC';
+        switch ($sort) {
+            case 'mssv_asc':
+                // First by length (number of characters) asc, then numeric value asc
+                $orderBy = 'ORDER BY CHAR_LENGTH(sv.mssv) ASC, CAST(sv.mssv AS UNSIGNED) ASC';
+                break;
+            case 'mssv_desc':
+                $orderBy = 'ORDER BY CHAR_LENGTH(sv.mssv) DESC, CAST(sv.mssv AS UNSIGNED) DESC';
+                break;
+            case 'name_asc':
+                // Sort by last word (case-insensitive)
+                $orderBy = "ORDER BY LOWER(SUBSTRING_INDEX(sv.fullname, ' ', -1)) ASC, LOWER(sv.fullname) ASC";
+                break;
+            case 'name_desc':
+                $orderBy = "ORDER BY LOWER(SUBSTRING_INDEX(sv.fullname, ' ', -1)) DESC, LOWER(sv.fullname) DESC";
+                break;
+            default:
+                $orderBy = 'ORDER BY sv.id ASC';
+        }
+
+        $query .= " " . $orderBy . " LIMIT :limit OFFSET :offset";
+
         try {
             $stmt = $this->conn->prepare($query);
             

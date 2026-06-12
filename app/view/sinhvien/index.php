@@ -275,6 +275,17 @@
         </select>
       </div>
       
+      <div class="form-group">
+        <label for="sort">Sắp xếp</label>
+        <select id="sort" name="sort">
+          <option value="">-- Mặc định --</option>
+          <option value="mssv_asc" <?php echo (isset($sort) && $sort === 'mssv_asc') ? 'selected' : ''; ?>>MSSV ↑ (số chữ số ↑, giá trị ↑)</option>
+          <option value="mssv_desc" <?php echo (isset($sort) && $sort === 'mssv_desc') ? 'selected' : ''; ?>>MSSV ↓ (số chữ số ↓, giá trị ↓)</option>
+          <option value="name_asc" <?php echo (isset($sort) && $sort === 'name_asc') ? 'selected' : ''; ?>>Tên ↑ (từ cuối A→Z)</option>
+          <option value="name_desc" <?php echo (isset($sort) && $sort === 'name_desc') ? 'selected' : ''; ?>>Tên ↓ (từ cuối Z→A)</option>
+        </select>
+      </div>
+      
       <div class="btn-group">
         <button type="submit" class="btn-search">🔍 Tìm kiếm</button>
         <a href="/sinhvien/index/1" class="btn-clear" style="padding: 8px 16px; border-radius: 5px; text-decoration: none; text-align: center;">✕ Xóa bộ lọc</a>
@@ -312,6 +323,7 @@
       if (!empty($mssv)) $queryParams[] = 'mssv=' . urlencode($mssv);
       if (!empty($fullname)) $queryParams[] = 'fullname=' . urlencode($fullname);
       if (!empty($classid)) $queryParams[] = 'classid=' . urlencode($classid);
+      if (!empty($sort)) $queryParams[] = 'sort=' . urlencode($sort);
       $queryString = !empty($queryParams) ? '?' . implode('&', $queryParams) : '';
     ?>
     <?php if ($currentPage > 1): ?>

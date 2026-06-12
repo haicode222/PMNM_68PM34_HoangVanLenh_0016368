@@ -13,6 +13,8 @@ class sinhvien extends controller
     $mssv = isset($_GET['mssv']) ? trim($_GET['mssv']) : '';
     $fullname = isset($_GET['fullname']) ? trim($_GET['fullname']) : '';
     $classid = isset($_GET['classid']) ? trim($_GET['classid']) : '';
+    // Sort parameter: values: mssv_asc, mssv_desc, name_asc, name_desc
+    $sort = isset($_GET['sort']) ? trim($_GET['sort']) : '';
     
     // Load all lophocs for dropdown
     $lophocs = $lophocModel->getAllLophoc();
@@ -26,8 +28,8 @@ class sinhvien extends controller
     $totalSV = $sinhvienModel->getTotalSinhvienWithFilter($mssv, $fullname, $classid);
     $totalPages = ceil($totalSV / $limit); // ceil() để làm tròn lên (VD: 15sv / 10 = 1.5 -> 2 trang)
 
-    // Lấy đúng 10 sinh viên của trang hiện tại (WITH CLASS NAMES via INNER JOIN + FILTER)
-    $sinhviens = $sinhvienModel->getSinhvienWithClassAndFilter($limit, $offset, $mssv, $fullname, $classid);  
+    // Lấy đúng 10 sinh viên của trang hiện tại (WITH CLASS NAMES via LEFT JOIN + FILTER + SORT)
+    $sinhviens = $sinhvienModel->getSinhvienWithClassAndFilter($limit, $offset, $mssv, $fullname, $classid, $sort);  
     // --- KẾT THÚC XỬ LÝ PHÂN TRANG --- //
   
     // Trả về View và đóng gói thêm 2 biến $currentPage, $totalPages sang mảng $data
@@ -40,7 +42,8 @@ class sinhvien extends controller
         'totalPages' => $totalPages,
         'mssv' => $mssv,
         'fullname' => $fullname,
-        'classid' => $classid
+        'classid' => $classid,
+        'sort' => $sort
     ]);
   }
 
